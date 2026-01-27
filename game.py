@@ -3,6 +3,7 @@ from player import Player
 from enemy import Enemy
 from room import RoomGenerator
 from weapon import Bullet
+import math
 
 
 class DungeonGame(arcade.Window):
@@ -154,8 +155,8 @@ class DungeonGame(arcade.Window):
         if self.player:
             delta_x = x - self.player.center_x
             delta_y = y - self.player.center_y
-            self.player.angle = -arcade.math.radians_to_degrees(
-                arcade.math.atan2(delta_y, delta_x)
+            self.player.angle = -math.degrees(
+                math.atan2(delta_y, delta_x)
             )
 
     def on_mouse_press(self, x, y, button, modifiers):
