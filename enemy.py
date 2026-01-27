@@ -5,6 +5,7 @@
 import arcade
 import random
 from config import *
+import math
 
 
 class Enemy(arcade.Sprite):
@@ -49,12 +50,12 @@ class Enemy(arcade.Sprite):
         if self.attack_cooldown > 0:
             self.attack_cooldown -= delta_time
 
-        # Движение к игроку
+            # Движение к игроку
         dx = player.center_x - self.center_x
         dy = player.center_y - self.center_y
 
         # Нормализация направления
-        distance = max(0.1, (dx ** 2 + dy ** 2) ** 0.5)
+        distance = max(0.1, math.hypot(dx, dy))  # Используем math.hypot для вычисления расстояния
         dx = (dx / distance) * self.speed * delta_time
         dy = (dy / distance) * self.speed * delta_time
 
@@ -63,9 +64,7 @@ class Enemy(arcade.Sprite):
         self.center_y += dy
 
         # Поворот в сторону игрока
-        self.angle = -arcade.math.radians_to_degrees(
-            arcade.math.atan2(dy, dx)
-        )
+        self.angle = -math.degrees(math.atan2(dy, dx))
 
     def take_damage(self, damage):
         """Получение урона"""
