@@ -4,9 +4,8 @@
 
 import arcade
 import random
-from config import *
 import math
-
+from config import *
 
 class Enemy(arcade.Sprite):
     """Базовый класс врага"""
@@ -50,21 +49,23 @@ class Enemy(arcade.Sprite):
         if self.attack_cooldown > 0:
             self.attack_cooldown -= delta_time
 
-            # Движение к игроку
+        # Движение к игроку
         dx = player.center_x - self.center_x
         dy = player.center_y - self.center_y
 
         # Нормализация направления
-        distance = max(0.1, math.hypot(dx, dy))  # Используем math.hypot для вычисления расстояния
-        dx = (dx / distance) * self.speed * delta_time
-        dy = (dy / distance) * self.speed * delta_time
+        distance = max(0.1, math.hypot(dx, dy))
+        if distance > 0:
+            dx = (dx / distance) * self.speed * delta_time
+            dy = (dy / distance) * self.speed * delta_time
 
         # Обновление позиции
         self.center_x += dx
         self.center_y += dy
 
         # Поворот в сторону игрока
-        self.angle = -math.degrees(math.atan2(dy, dx))
+        if dx != 0 or dy != 0:
+            self.angle = math.degrees(math.atan2(dy, dx))
 
     def take_damage(self, damage):
         """Получение урона"""

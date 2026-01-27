@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eeb771b2-9768-4a40-8d5a-57e45c3e5733" name="Changes" comment="replace 2">
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+    <list default="true" id="eeb771b2-9768-4a40-8d5a-57e45c3e5733" name="Changes" comment="бага с переводом в градусы (враг)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/enemy.py" beforeDir="false" afterPath="$PROJECT_DIR$/enemy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weapon.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapon.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +47,7 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python.config.executor": "Run",
+    "Python.enemy.executor": "Run",
     "Python.game.executor": "Run",
     "Python.main.executor": "Run",
     "Python.player.executor": "Run",
@@ -102,12 +106,30 @@
       <option name="project" value="LOCAL" />
       <updated>1769494161041</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="бага с переводом в градусы">
+      <option name="closed" value="true" />
+      <created>1769494503160</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1769494503160</updated>
+    </task>
+    <task id="LOCAL-00006" summary="бага с переводом в градусы (враг)">
+      <option name="closed" value="true" />
+      <created>1769494550936</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1769494550936</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="!start" />
     <MESSAGE value="replace 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="replace 2" />
+    <MESSAGE value="бага с переводом в градусы" />
+    <MESSAGE value="бага с переводом в градусы (враг)" />
+    <option name="LAST_COMMIT_MESSAGE" value="бага с переводом в градусы (враг)" />
   </component>
 </project>

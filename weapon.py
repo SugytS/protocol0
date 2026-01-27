@@ -29,18 +29,18 @@ class Bullet(arcade.Sprite):
         dy = target_y - self.center_y
         
         # Нормализация
-        distance = max(0.1, math.sqrt(dx**2 + dy**2))
+        distance = max(0.1, math.hypot(dx, dy))
         self.change_x = (dx / distance) * self.speed
         self.change_y = (dy / distance) * self.speed
-        
-        # Поворот спрайта в направлении движения
-        self.angle = -math.degrees(math.atan2(dy, dx))
-    
-    def update(self):
+
+        # Поворот спрайта в направлении движения (правильный расчет)
+        self.angle = math.degrees(math.atan2(dy, dx))
+
+    def update(self, delta_time=1/60):
         """Обновление позиции пули"""
-        self.center_x += self.change_x
-        self.center_y += self.change_y
-        
+        self.center_x += self.change_x * delta_time
+        self.center_y += self.change_y * delta_time
+
         # Удаление пули, если она вышла за пределы экрана
         margin = 100
         if (self.center_x < -margin or self.center_x > SCREEN_WIDTH + margin or
