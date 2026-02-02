@@ -37,20 +37,7 @@ class UpgradeTestView(arcade.View):
                 "description": "+15% к скорости движения",
                 "color": arcade.color.BLUE
             },
-            {
-                "name": "Восстановить здоровье",
-                "type": "heal",
-                "value": 50,
-                "description": "+50 здоровья",
-                "color": arcade.color.GREEN
-            },
-            {
-                "name": "Увеличить патроны",
-                "type": "ammo",
-                "value": 20,
-                "description": "+20 патронов",
-                "color": arcade.color.YELLOW
-            }
+            # Убраны: "Восстановить здоровье" и "Увеличить патроны"
         ]
     
     def on_draw(self):
@@ -106,7 +93,7 @@ class UpgradeTestView(arcade.View):
                 anchor_x="center"
             )
         
-        # Кнопки улучшений
+        # Кнопки улучшений (только 3 теперь)
         button_width = 350
         button_height = 70
         start_y = SCREEN_HEIGHT * 0.55
@@ -330,14 +317,6 @@ def test_upgrade_system():
     # Улучшение скорости
     result = test_player.apply_upgrade("speed", 1.15)
     print(f"3. {result}")
-    
-    # Восстановление здоровья
-    result = test_player.apply_upgrade("heal", 50)
-    print(f"4. {result}")
-    
-    # Улучшение патронов
-    result = test_player.apply_upgrade("ammo", 20)
-    print(f"5. {result}")
     
     print("\nИтоговые характеристики игрока:")
     print(f"  Здоровье: {test_player.health}/{test_player.max_health}")
