@@ -39,7 +39,7 @@ class MenuView(arcade.View):
         bottom = start_y - button_height // 2
 
         # Используем draw_lrbt_rectangle_filled (left, right, top, bottom)
-        arcade.draw_lrbt_rectangle_filled(left, right, top, bottom, arcade.color.DARK_GREEN)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom, top, arcade.color.DARK_GREEN)
         arcade.draw_text(
             "НОВАЯ ИГРА",
             SCREEN_WIDTH // 2,
@@ -55,7 +55,7 @@ class MenuView(arcade.View):
         top_exit = start_y_exit + button_height // 2
         bottom_exit = start_y_exit - button_height // 2
 
-        arcade.draw_lrbt_rectangle_filled(left, right, top_exit, bottom_exit, arcade.color.DARK_RED)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom_exit, top_exit, arcade.color.DARK_RED)
         arcade.draw_text(
             "ВЫХОД",
             SCREEN_WIDTH // 2,

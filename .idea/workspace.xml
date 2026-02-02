@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eeb771b2-9768-4a40-8d5a-57e45c3e5733" name="Changes" comment="в1 (наносит + получает урон, без генерации)">
-      <change afterPath="$PROJECT_DIR$/crate.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/level_generator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/menu.py" afterDir="false" />
+    <list default="true" id="eeb771b2-9768-4a40-8d5a-57e45c3e5733" name="Changes" comment="в2 (комнаты + менюшка баффов)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/enemy.py" beforeDir="false" afterPath="$PROJECT_DIR$/enemy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/items.py" beforeDir="false" afterPath="$PROJECT_DIR$/items.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/room.py" beforeDir="false" afterPath="$PROJECT_DIR$/room.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weapon.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapon.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +128,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769495158822</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="в2 (комнаты + менюшка баффов)">
+      <option name="closed" value="true" />
+      <created>1770030977838</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1770030977839</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -168,6 +166,7 @@
     <MESSAGE value="бага с переводом в градусы" />
     <MESSAGE value="бага с переводом в градусы (враг)" />
     <MESSAGE value="в1 (наносит + получает урон, без генерации)" />
-    <option name="LAST_COMMIT_MESSAGE" value="в1 (наносит + получает урон, без генерации)" />
+    <MESSAGE value="в2 (комнаты + менюшка баффов)" />
+    <option name="LAST_COMMIT_MESSAGE" value="в2 (комнаты + менюшка баффов)" />
   </component>
 </project>
