@@ -4,6 +4,7 @@
 
 import arcade
 from config import *
+from game import DungeonGame  # Импортируем исправленный класс
 
 class MenuView(arcade.View):
     """Главное меню игры"""
@@ -27,7 +28,7 @@ class MenuView(arcade.View):
             bold=True
         )
 
-        # Кнопки - используем правильную функцию
+        # Кнопки
         button_height = 50
         button_width = 200
         start_y = SCREEN_HEIGHT * 0.5
@@ -38,7 +39,7 @@ class MenuView(arcade.View):
         top = start_y + button_height // 2
         bottom = start_y - button_height // 2
 
-        # Используем draw_lrbt_rectangle_filled (left, right, top, bottom)
+        # Исправленный вызов: draw_lrbt_rectangle_filled(left, right, bottom, top)
         arcade.draw_lrbt_rectangle_filled(left, right, bottom, top, arcade.color.DARK_GREEN)
         arcade.draw_text(
             "НОВАЯ ИГРА",
@@ -84,7 +85,7 @@ class MenuView(arcade.View):
 
         if (SCREEN_WIDTH // 2 - button_width // 2 <= x <= SCREEN_WIDTH // 2 + button_width // 2 and
             start_y - button_height // 2 <= y <= start_y + button_height // 2):
-            from game import DungeonGame
+            # Создаем игру как View
             game_view = DungeonGame()
             self.window.show_view(game_view)
 
@@ -112,10 +113,11 @@ class UpgradeMenuView(arcade.View):
         """Отрисовка меню улучшений"""
         self.clear(arcade.color.DARK_SLATE_GRAY)
 
-        # Полупрозрачный затемняющий слой
+        # Полупрозрачный затемняющий слой - ИСПРАВЛЕНО
+        # draw_lrbt_rectangle_filled(left, right, bottom, top, color)
         arcade.draw_lrbt_rectangle_filled(
-            0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,
-            (0, 0, 0, 200)
+            0, SCREEN_WIDTH, 0, SCREEN_HEIGHT,  # left, right, bottom, top
+            (0, 0, 0, 200)  # цвет с прозрачностью
         )
 
         # Заголовок
@@ -156,14 +158,15 @@ class UpgradeMenuView(arcade.View):
             top = y_pos + button_height // 2
             bottom = y_pos - button_height // 2
 
+            # ИСПРАВЛЕНО: draw_lrbt_rectangle_filled(left, right, bottom, top, color)
             arcade.draw_lrbt_rectangle_filled(
-                left, right, top, bottom,
+                left, right, bottom, top,  # left, right, bottom, top
                 arcade.color.DARK_BLUE
             )
 
-            # Рамка кнопки - используем draw_lrtb_rectangle_outline
-            arcade.draw_lrtb_rectangle_outline(
-                left, right, top, bottom,
+            # Рамка кнопки - ИСПРАВЛЕНО: используем draw_lrbt_rectangle_outline (такой же порядок параметров)
+            arcade.draw_lrbt_rectangle_outline(
+                left, right, bottom, top,  # left, right, bottom, top
                 arcade.color.GOLD,
                 2
             )
@@ -212,9 +215,9 @@ class GameOverView(arcade.View):
         """Отрисовка экрана завершения"""
         self.clear(arcade.color.DARK_SLATE_GRAY)
 
-        # Полупрозрачный затемняющий слой
+        # Полупрозрачный затемняющий слой - ИСПРАВЛЕНО
         arcade.draw_lrbt_rectangle_filled(
-            0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+            0, SCREEN_WIDTH, 0, SCREEN_HEIGHT,  # left, right, bottom, top
             (0, 0, 0, 200)
         )
 
@@ -259,7 +262,8 @@ class GameOverView(arcade.View):
         top_menu = start_y + button_height // 2
         bottom_menu = start_y - button_height // 2
 
-        arcade.draw_lrbt_rectangle_filled(left, right, top_menu, bottom_menu, arcade.color.DARK_GREEN)
+        # ИСПРАВЛЕНО: draw_lrbt_rectangle_filled(left, right, bottom, top, color)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom_menu, top_menu, arcade.color.DARK_GREEN)
         arcade.draw_text(
             "В МЕНЮ",
             SCREEN_WIDTH // 2,
@@ -275,7 +279,8 @@ class GameOverView(arcade.View):
         top_exit = start_y_exit + button_height // 2
         bottom_exit = start_y_exit - button_height // 2
 
-        arcade.draw_lrbt_rectangle_filled(left, right, top_exit, bottom_exit, arcade.color.DARK_RED)
+        # ИСПРАВЛЕНО: draw_lrbt_rectangle_filled(left, right, bottom, top, color)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom_exit, top_exit, arcade.color.DARK_RED)
         arcade.draw_text(
             "ВЫХОД",
             SCREEN_WIDTH // 2,
