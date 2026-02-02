@@ -13,12 +13,12 @@ from weapon import Bullet
 from items import Item
 from crate import Crate
 
-class DungeonGame(arcade.Window):
-    """Главный класс игры"""
-
+class DungeonGame(arcade.View):
+    """Главный класс игры как View"""
+    
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
+        super().__init__()
+        
         # Игровые объекты
         self.player = None
         self.level_generator = None
