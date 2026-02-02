@@ -17,23 +17,24 @@ class Bullet(arcade.Sprite):
         )
         self.scale = 0.5
         self.speed = BULLET_SPEED
-        self.damage = BULLET_DAMAGE
-        
+        self.damage = BULLET_DAMAGE  # Базовый урон
+
         # Направление движения
         self.change_x = 0
         self.change_y = 0
-        
-    def set_direction(self, target_x, target_y):
+        self.angle = 0
+
+    def set_direction(self, start_x, start_y, target_x, target_y):
         """Установка направления движения к цели"""
-        dx = target_x - self.center_x
-        dy = target_y - self.center_y
-        
+        dx = target_x - start_x
+        dy = target_y - start_y
+
         # Нормализация
         distance = max(0.1, math.hypot(dx, dy))
         self.change_x = (dx / distance) * self.speed
         self.change_y = (dy / distance) * self.speed
 
-        # Поворот спрайта в направлении движения (правильный расчет)
+        # Угол поворота спрайта
         self.angle = math.degrees(math.atan2(dy, dx))
 
     def update(self, delta_time=1/60):
