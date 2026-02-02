@@ -105,8 +105,7 @@ class UpgradeMenuView(arcade.View):
             {"name": "Увеличить урон на 20%", "type": "damage", "value": 1.2},
             {"name": "Увеличить здоровье на 25", "type": "health", "value": 25},
             {"name": "Увеличить скорость на 15%", "type": "speed", "value": 1.15},
-            {"name": "Увеличить патроны на 20", "type": "ammo", "value": 20},
-            {"name": "Восстановить 50 здоровья", "type": "heal", "value": 50},
+            # Убрали восстановление здоровья и патроны, так как они восстанавливаются автоматически
         ]
 
     def on_draw(self):
@@ -206,10 +205,11 @@ class UpgradeMenuView(arcade.View):
 class GameOverView(arcade.View):
     """Экран завершения игры"""
 
-    def __init__(self, score, level):
+    def __init__(self, score, level, window):
         super().__init__()
         self.score = score
         self.level = level
+        self.window_ref = window  # Сохраняем ссылку на окно
 
     def on_draw(self):
         """Отрисовка экрана завершения"""
@@ -303,6 +303,7 @@ class GameOverView(arcade.View):
         bottom_menu = start_y - button_height // 2
 
         if (left <= x <= right and bottom_menu <= y <= top_menu):
+            # Возвращаемся в главное меню
             from menu import MenuView
             menu_view = MenuView()
             self.window.show_view(menu_view)
