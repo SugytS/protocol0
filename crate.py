@@ -11,10 +11,16 @@ class Crate(arcade.Sprite):
     def __init__(self):
         super().__init__()
 
-        # Создаем черный прямоугольник
-        self.texture = arcade.make_soft_square_texture(
-            TILE_SIZE, arcade.color.BLACK
-        )
+        # Используем текстуру деревянного ящика из ресурсов
+        try:
+            self.texture = arcade.load_texture(
+                ":resources:images/tiles/boxCrate_double.png"
+            )
+        except:
+            # Если текстура не найдена, создаем коричневый прямоугольник
+            self.texture = arcade.make_soft_square_texture(
+                TILE_SIZE, arcade.color.BROWN
+            )
 
         self.scale = 1.0
         self.health = 50
