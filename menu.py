@@ -1,70 +1,306 @@
-import arcade
-from game import DungeonGame
+"""
+Система меню игры (исправленная версия)
+"""
 
+import arcade
+from config import *
 
 class MenuView(arcade.View):
+    """Главное меню игры"""
+
     def __init__(self):
         super().__init__()
-        self.game_view = None
 
     def on_draw(self):
-        # В View не нужно вызывать arcade.start_render()
-        # Arcade делает это автоматически
+        """Отрисовка меню"""
+        self.clear(arcade.color.DARK_SLATE_GRAY)
 
-        # Очищаем экран
-        self.clear()
+        # Заголовок
+        arcade.draw_text(
+            "DUNGEON SHOOTER",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT * 0.7,
+            arcade.color.GOLD,
+            font_size=50,
+            anchor_x="center",
+            font_name="Arial",
+            bold=True
+        )
 
-        # Простой фон с двумя цветами
-        # Верхняя часть - темнее (bottom=384, top=768)
-        arcade.draw_lrbt_rectangle_filled(0, 1024, 384, 768, arcade.color.DARK_SLATE_GRAY)
+        # Кнопки - используем правильную функцию
+        button_height = 50
+        button_width = 200
+        start_y = SCREEN_HEIGHT * 0.5
 
-        # Нижняя часть - светлее (bottom=0, top=384)
-        arcade.draw_lrbt_rectangle_filled(0, 1024, 0, 384, arcade.color.DARK_BLUE_GRAY)
+        # Кнопка "Новая игра"
+        left = SCREEN_WIDTH // 2 - button_width // 2
+        right = SCREEN_WIDTH // 2 + button_width // 2
+        top = start_y + button_height // 2
+        bottom = start_y - button_height // 2
 
-        # Добавим простой узор
-        for i in range(0, 1024, 100):
-            arcade.draw_line(i, 0, i, 768, arcade.color.BLACK, 1)
+        # Используем draw_lrbt_rectangle_filled (left, right, top, bottom)
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom, top, arcade.color.DARK_GREEN)
+        arcade.draw_text(
+            "НОВАЯ ИГРА",
+            SCREEN_WIDTH // 2,
+            start_y,
+            arcade.color.WHITE,
+            font_size=24,
+            anchor_x="center",
+            anchor_y="center"
+        )
 
-        for i in range(0, 768, 100):
-            arcade.draw_line(0, i, 1024, i, arcade.color.BLACK, 1)
+        # Кнопка "Выход"
+        start_y_exit = start_y - 80
+        top_exit = start_y_exit + button_height // 2
+        bottom_exit = start_y_exit - button_height // 2
 
-        # Рисуем заголовок игры
-        title_text = arcade.Text("PROTOCOL0", 512, 550, arcade.color.CYAN, 72,
-                                 anchor_x="center", anchor_y="center",
-                                 bold=True)
-        title_text.draw()
+        arcade.draw_lrbt_rectangle_filled(left, right, bottom_exit, top_exit, arcade.color.DARK_RED)
+        arcade.draw_text(
+            "ВЫХОД",
+            SCREEN_WIDTH // 2,
+            start_y_exit,
+            arcade.color.WHITE,
+            font_size=24,
+            anchor_x="center",
+            anchor_y="center"
+        )
 
-        # Подзаголовок
-        subtitle_text = arcade.Text("Dungeon Crawler", 512, 470,
-                                    arcade.color.LIGHT_CYAN, 32,
-                                    anchor_x="center", anchor_y="center")
-        subtitle_text.draw()
-
-        # Инструкция
-        instruction_text = arcade.Text("НАЖМИТЕ ЛКМ ЧТОБЫ НАЧАТЬ", 512, 350,
-                                       arcade.color.WHITE, 28,
-                                       anchor_x="center", anchor_y="center")
-        instruction_text.draw()
-
-        # Управление
-        controls_text = arcade.Text("Управление: WASD - движение, ЛКМ - стрельба",
-                                    512, 250, arcade.color.LIGHT_GRAY, 20,
-                                    anchor_x="center", anchor_y="center")
-        controls_text.draw()
-
-        # Дополнительная информация
-        info_text = arcade.Text("Очищайте комнаты, уничтожайте врагов, улучшайте персонажа!",
-                                512, 180, arcade.color.GRAY, 16,
-                                anchor_x="center", anchor_y="center")
-        info_text.draw()
-
-        # Версия
-        version_text = arcade.Text("v1.0", 512, 50, arcade.color.GRAY, 14,
-                                   anchor_x="center", anchor_y="center")
-        version_text.draw()
+        # Инструкции
+        arcade.draw_text(
+            "Управление: WASD/Стрелки - движение, ЛКМ - стрельба",
+            SCREEN_WIDTH // 2,
+            50,
+            arcade.color.LIGHT_GRAY,
+            font_size=16,
+            anchor_x="center"
+        )
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == arcade.MOUSE_BUTTON_LEFT:
-            print("Запуск игры...")
-            self.game_view = DungeonGame()
-            self.window.show_view(self.game_view)
+        """Обработка кликов по меню"""
+        button_height = 50
+        button_width = 200
+        start_y = SCREEN_HEIGHT * 0.5
+
+        if (SCREEN_WIDTH // 2 - button_width // 2 <= x <= SCREEN_WIDTH // 2 + button_width // 2 and
+            start_y - button_height // 2 <= y <= start_y + button_height // 2):
+            from game import DungeonGame
+            game_view = DungeonGame()
+            self.window.show_view(game_view)
+
+        elif (SCREEN_WIDTH // 2 - button_width // 2 <= x <= SCREEN_WIDTH // 2 + button_width // 2 and
+              start_y - 80 - button_height // 2 <= y <= start_y - 80 + button_height // 2):
+            arcade.close_window()
+
+
+class UpgradeMenuView(arcade.View):
+    """Меню улучшений после уровня"""
+
+    def __init__(self, game_view, callback):
+        super().__init__()
+        self.game_view = game_view
+        self.callback = callback
+        self.upgrades = [
+            {"name": "Увеличить урон на 20%", "type": "damage", "value": 1.2},
+            {"name": "Увеличить здоровье на 25", "type": "health", "value": 25},
+            {"name": "Увеличить скорость на 15%", "type": "speed", "value": 1.15},
+            {"name": "Увеличить патроны на 20", "type": "ammo", "value": 20},
+            {"name": "Восстановить 50 здоровья", "type": "heal", "value": 50},
+        ]
+
+    def on_draw(self):
+        """Отрисовка меню улучшений"""
+        self.clear(arcade.color.DARK_SLATE_GRAY)
+
+        # Полупрозрачный затемняющий слой
+        arcade.draw_lrbt_rectangle_filled(
+            0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+            (0, 0, 0, 200)
+        )
+
+        # Заголовок
+        arcade.draw_text(
+            "ВЫБЕРИТЕ УЛУЧШЕНИЕ",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT * 0.8,
+            arcade.color.GOLD,
+            font_size=40,
+            anchor_x="center",
+            bold=True
+        )
+
+        # Текущие характеристики
+        arcade.draw_text(
+            f"Урон: {self.game_view.player.damage_multiplier:.1f}x  |  "
+            f"Здоровье: {self.game_view.player.health}/{self.game_view.player.max_health}  |  "
+            f"Скорость: {self.game_view.player.speed:.0f}",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT * 0.7,
+            arcade.color.LIGHT_GRAY,
+            font_size=18,
+            anchor_x="center"
+        )
+
+        # Кнопки улучшений
+        button_height = 50
+        button_width = 400
+        start_y = SCREEN_HEIGHT * 0.55
+        spacing = 70
+
+        for i, upgrade in enumerate(self.upgrades):
+            y_pos = start_y - i * spacing
+
+            # Кнопка - используем draw_lrbt_rectangle_filled
+            left = SCREEN_WIDTH // 2 - button_width // 2
+            right = SCREEN_WIDTH // 2 + button_width // 2
+            top = y_pos + button_height // 2
+            bottom = y_pos - button_height // 2
+
+            arcade.draw_lrbt_rectangle_filled(
+                left, right, top, bottom,
+                arcade.color.DARK_BLUE
+            )
+
+            # Рамка кнопки - используем draw_lrtb_rectangle_outline
+            arcade.draw_lrtb_rectangle_outline(
+                left, right, top, bottom,
+                arcade.color.GOLD,
+                2
+            )
+
+            # Текст улучшения
+            arcade.draw_text(
+                upgrade["name"],
+                SCREEN_WIDTH // 2,
+                y_pos,
+                arcade.color.WHITE,
+                font_size=22,
+                anchor_x="center",
+                anchor_y="center"
+            )
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        """Обработка выбора улучшения"""
+        button_height = 50
+        button_width = 400
+        start_y = SCREEN_HEIGHT * 0.55
+        spacing = 70
+
+        for i, upgrade in enumerate(self.upgrades):
+            y_pos = start_y - i * spacing
+
+            left = SCREEN_WIDTH // 2 - button_width // 2
+            right = SCREEN_WIDTH // 2 + button_width // 2
+            top = y_pos + button_height // 2
+            bottom = y_pos - button_height // 2
+
+            if (left <= x <= right and bottom <= y <= top):
+                self.callback(upgrade["type"], upgrade["value"])
+                self.window.show_view(self.game_view)
+                break
+
+
+class GameOverView(arcade.View):
+    """Экран завершения игры"""
+
+    def __init__(self, score, level):
+        super().__init__()
+        self.score = score
+        self.level = level
+
+    def on_draw(self):
+        """Отрисовка экрана завершения"""
+        self.clear(arcade.color.DARK_SLATE_GRAY)
+
+        # Полупрозрачный затемняющий слой
+        arcade.draw_lrbt_rectangle_filled(
+            0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+            (0, 0, 0, 200)
+        )
+
+        # Заголовок
+        arcade.draw_text(
+            "ИГРА ОКОНЧЕНА",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT * 0.7,
+            arcade.color.RED,
+            font_size=50,
+            anchor_x="center",
+            bold=True
+        )
+
+        # Статистика
+        arcade.draw_text(
+            f"Достигнут уровень: {self.level}",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT * 0.55,
+            arcade.color.WHITE,
+            font_size=30,
+            anchor_x="center"
+        )
+
+        arcade.draw_text(
+            f"Общий счет: {self.score}",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT * 0.45,
+            arcade.color.WHITE,
+            font_size=30,
+            anchor_x="center"
+        )
+
+        # Кнопки
+        button_height = 50
+        button_width = 200
+        start_y = SCREEN_HEIGHT * 0.3
+
+        # Кнопка "В меню"
+        left = SCREEN_WIDTH // 2 - button_width // 2
+        right = SCREEN_WIDTH // 2 + button_width // 2
+        top_menu = start_y + button_height // 2
+        bottom_menu = start_y - button_height // 2
+
+        arcade.draw_lrbt_rectangle_filled(left, right, top_menu, bottom_menu, arcade.color.DARK_GREEN)
+        arcade.draw_text(
+            "В МЕНЮ",
+            SCREEN_WIDTH // 2,
+            start_y,
+            arcade.color.WHITE,
+            font_size=24,
+            anchor_x="center",
+            anchor_y="center"
+        )
+
+        # Кнопка "Выход"
+        start_y_exit = start_y - 80
+        top_exit = start_y_exit + button_height // 2
+        bottom_exit = start_y_exit - button_height // 2
+
+        arcade.draw_lrbt_rectangle_filled(left, right, top_exit, bottom_exit, arcade.color.DARK_RED)
+        arcade.draw_text(
+            "ВЫХОД",
+            SCREEN_WIDTH // 2,
+            start_y_exit,
+            arcade.color.WHITE,
+            font_size=24,
+            anchor_x="center",
+            anchor_y="center"
+        )
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        """Обработка кликов"""
+        button_height = 50
+        button_width = 200
+        start_y = SCREEN_HEIGHT * 0.3
+
+        left = SCREEN_WIDTH // 2 - button_width // 2
+        right = SCREEN_WIDTH // 2 + button_width // 2
+        top_menu = start_y + button_height // 2
+        bottom_menu = start_y - button_height // 2
+
+        if (left <= x <= right and bottom_menu <= y <= top_menu):
+            from menu import MenuView
+            menu_view = MenuView()
+            self.window.show_view(menu_view)
+
+        elif (left <= x <= right and (start_y - 80 - button_height // 2) <= y <= (start_y - 80 + button_height // 2)):
+            arcade.close_window()
