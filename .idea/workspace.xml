@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eeb771b2-9768-4a40-8d5a-57e45c3e5733" name="Changes" comment="в2 (комнаты + менюшка баффов)">
+    <list default="true" id="eeb771b2-9768-4a40-8d5a-57e45c3e5733" name="Changes" comment="в3 (исправил баг с отрисовкой)">
+      <change afterPath="$PROJECT_DIR$/door.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/upgrade_menu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/enemy.py" beforeDir="false" afterPath="$PROJECT_DIR$/enemy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/menu.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -136,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770030977839</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="в3 (исправил баг с отрисовкой)">
+      <option name="closed" value="true" />
+      <created>1770032817563</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1770032817563</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -167,6 +180,7 @@
     <MESSAGE value="бага с переводом в градусы (враг)" />
     <MESSAGE value="в1 (наносит + получает урон, без генерации)" />
     <MESSAGE value="в2 (комнаты + менюшка баффов)" />
-    <option name="LAST_COMMIT_MESSAGE" value="в2 (комнаты + менюшка баффов)" />
+    <MESSAGE value="в3 (исправил баг с отрисовкой)" />
+    <option name="LAST_COMMIT_MESSAGE" value="в3 (исправил баг с отрисовкой)" />
   </component>
 </project>
