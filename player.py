@@ -33,6 +33,7 @@ class Player(arcade.Sprite):
 
         # Направление взгляда
         self.angle = 0
+        self.prev_angle = 0  # Предыдущий угол для проверки столкновений
 
     def update(self, delta_time, keys_pressed):
         """Обновление позиции игрока"""
@@ -55,9 +56,17 @@ class Player(arcade.Sprite):
             self.change_x *= factor
             self.change_y *= factor
 
+        # Сохраняем предыдущую позицию для отката при столкновении
+        prev_x = self.center_x
+        prev_y = self.center_y
+        prev_angle = self.angle
+
         # Обновление позиции
         self.center_x += self.change_x
         self.center_y += self.change_y
+
+        # Сохраняем предыдущий угол
+        self.prev_angle = prev_angle
 
         # Ограничение движения в пределах комнаты
         self.center_x = max(TILE_SIZE, min(SCREEN_WIDTH - TILE_SIZE, self.center_x))
