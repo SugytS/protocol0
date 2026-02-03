@@ -13,12 +13,13 @@ from weapon import Bullet
 from items import Item
 from crate import Crate
 
+
 class DungeonGame(arcade.View):
     """Главный класс игры как View"""
-    
+
     def __init__(self):
         super().__init__()
-        
+
         # Игровые объекты
         self.player = None
         self.level_generator = None
@@ -197,23 +198,23 @@ class DungeonGame(arcade.View):
         """Отрисовка интерфейса"""
         # Здоровье
         arcade.draw_text(f"HP: {self.player.health}/{self.player.max_health}",
-                        10, SCREEN_HEIGHT - 30, UI_COLOR, 20)
+                         10, SCREEN_HEIGHT - 30, UI_COLOR, 20)
 
         # Патроны
         arcade.draw_text(f"Ammo: {self.player.ammo}",
-                        10, SCREEN_HEIGHT - 60, UI_COLOR, 20)
+                         10, SCREEN_HEIGHT - 60, UI_COLOR, 20)
 
         # Счет
         arcade.draw_text(f"Score: {self.score}",
-                        SCREEN_WIDTH - 150, SCREEN_HEIGHT - 30, UI_COLOR, 20)
+                         SCREEN_WIDTH - 150, SCREEN_HEIGHT - 30, UI_COLOR, 20)
 
         # Уровень
         arcade.draw_text(f"Level: {self.level}",
-                        SCREEN_WIDTH - 150, SCREEN_HEIGHT - 60, UI_COLOR, 20)
+                         SCREEN_WIDTH - 150, SCREEN_HEIGHT - 60, UI_COLOR, 20)
 
         # Множитель урона
         arcade.draw_text(f"Damage: {self.player.damage_multiplier:.1f}x",
-                        10, SCREEN_HEIGHT - 90, UI_COLOR, 20)
+                         10, SCREEN_HEIGHT - 90, UI_COLOR, 20)
 
         # Номер комнаты
         room_num = 1
@@ -222,7 +223,7 @@ class DungeonGame(arcade.View):
                 room_num = i + 1
                 break
         arcade.draw_text(f"Room: {room_num}/{len(self.current_level['rooms'])}",
-                        SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 30, UI_COLOR, 20)
+                         SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 30, UI_COLOR, 20)
 
     def on_update(self, delta_time):
         """Обновление игровой логики"""
@@ -244,9 +245,20 @@ class DungeonGame(arcade.View):
             self.player.center_x -= self.player.change_x
             self.player.center_y -= self.player.change_y
 
-        # Обновляем врагов
+        # Обновляем врагов с учетом столкновений с ящиками
         for enemy in self.enemy_list:
+            # Сохраняем старую позицию
+            old_x = enemy.center_x
+            old_y = enemy.center_y
+
             enemy.update_ai(self.player, delta_time, self.enemy_bullet_list)
+
+            # Проверяем столкновение врага со стенами и ящиками
+            if arcade.check_for_collision_with_list(enemy, self.wall_list) or \
+               arcade.check_for_collision_with_list(enemy, self.crate_list):
+                # Откатываем врага на старую позицию
+                enemy.center_x = old_x
+                enemy.center_y = old_y
 
         # Обновляем пули
         for bullet in self.bullet_list:
@@ -274,7 +286,7 @@ class DungeonGame(arcade.View):
         """Обработка завершения игры"""
         self.game_over = True
         self.paused = True
-        
+
         # Импортируем здесь, чтобы избежать циклического импорта
         from menu import GameOverView
         game_over_view = GameOverView(self.score, self.level, self.window)
@@ -306,6 +318,15 @@ class DungeonGame(arcade.View):
         for bullet in self.enemy_bullet_list:
             if arcade.check_for_collision(bullet, self.player):
                 self.player.take_damage(bullet.damage)
+                bullet.remove_from_sprite_lists()
+
+        # Пули врагов с ящиками (ИСПРАВЛЕНИЕ №1)
+        for bullet in self.enemy_bullet_list:
+            hit_list = arcade.check_for_collision_with_list(bullet, self.crate_list)
+            for crate in hit_list:
+                if crate.take_damage(bullet.damage):
+                    crate.remove_from_sprite_lists()
+                    self.score += 5
                 bullet.remove_from_sprite_lists()
 
         # Игрок с врагами (ближний бой)
