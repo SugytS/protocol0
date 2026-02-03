@@ -6,6 +6,7 @@ import arcade
 import math
 from config import *
 
+
 class Player(arcade.Sprite):
     """Класс игрока"""
 
@@ -20,11 +21,18 @@ class Player(arcade.Sprite):
         self.max_health = PLAYER_HEALTH
         self.ammo = PLAYER_STARTING_AMMO
         self.score = 0
+        self.coins = 0  # Добавляем монеты
         self.change_x = 0
         self.change_y = 0
 
         # Модификаторы улучшений
         self.damage_multiplier = 1.0  # Множитель урона
+        
+        # История покупок (для расчета цены) - ТОЛЬКО ДВА ТИПА
+        self.upgrade_purchase_count = {
+            "damage": 0,
+            "speed": 0,
+        }
 
         # Загрузка текстур
         self.texture = arcade.load_texture(
@@ -88,27 +96,71 @@ class Player(arcade.Sprite):
         """Добавление патронов"""
         self.ammo += amount
 
+    def add_coins(self, amount):
+        """Добавление монет"""
+        self.coins += amount
+        return self.coins
+
+    def spend_coins(self, amount):
+        """Трата монет"""
+        if self.coins >= amount:
+            self.coins -= amount
+            return True
+        return False
+
+    def get_upgrade_price(self, upgrade_type):
+        """Получить цену улучшения на основе истории покупок"""
+        base_price = UPGRADE_BASE_PRICES.get(upgrade_type, 100)
+        purchase_count = self.upgrade_purchase_count.get(upgrade_type, 0)
+        
+        # Цена растет с каждой покупкой
+        price = int(base_price * (UPGRADE_PRICE_MULTIPLIER ** purchase_count))
+        return price
+
+    def can_afford_upgrade(self, upgrade_type):
+        """Проверить, может ли игрок позволить себе улучшение"""
+        price = self.get_upgrade_price(upgrade_type)
+        return self.coins >= price
+
     def apply_upgrade(self, upgrade_type, value):
-        """Применение улучшения"""
+        """Применение улучшения - ТОЛЬКО ДВА ТИПА"""
+        # Получаем цену улучшения
+        price = self.get_upgrade_price(upgrade_type)
+        
+        # Проверяем, достаточно ли монет
+        if not self.spend_coins(price):
+            return False, "Недостаточно монет!"
+
+        # Увеличиваем счетчик покупок этого типа улучшения
+        self.upgrade_purchase_count[upgrade_type] += 1
+        
         if upgrade_type == "damage":
             self.damage_multiplier *= value
-            return f"Урон увеличен до {self.damage_multiplier:.1f}x"
-
-        elif upgrade_type == "health":
-            self.max_health += value
-            self.health += value
-            return f"Максимальное здоровье: {self.max_health}"
+            return True, f"Урон увеличен до {self.damage_multiplier:.1f}x (-{price} монет)"
 
         elif upgrade_type == "speed":
             self.speed = self.base_speed * value
-            return f"Скорость: {self.speed:.0f}"
+            return True, f"Скорость: {self.speed:.0f} (-{price} монет)"
 
-        elif upgrade_type == "ammo":
-            self.ammo += value
-            return f"Патроны: {self.ammo}"
+        return False, "Неизвестный тип улучшения"
 
-        elif upgrade_type == "heal":
-            healed = self.heal(value)
-            return f"Восстановлено {healed} здоровья"
-
-        return "Улучшение применено"
+    def get_upgrade_info(self, upgrade_type):
+        """Получить информацию об улучшении"""
+        purchase_count = self.upgrade_purchase_count.get(upgrade_type, 0)
+        price = self.get_upgrade_price(upgrade_type)
+        
+        info = {
+            "price": price,
+            "purchased": purchase_count,
+            "can_afford": self.coins >= price
+        }
+        
+        # Добавляем специфическую информацию для каждого типа
+        if upgrade_type == "damage":
+            info["current_value"] = f"{self.damage_multiplier:.1f}x"
+            info["next_value"] = f"{self.damage_multiplier * 1.2:.1f}x"
+        elif upgrade_type == "speed":
+            info["current_value"] = f"{self.speed:.0f}"
+            info["next_value"] = f"{self.speed * 1.15:.0f}"
+            
+        return info
