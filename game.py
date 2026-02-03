@@ -191,15 +191,7 @@ class DungeonGame(arcade.View):
         # Рисуем UI
         self.draw_ui()
 
-        if self.game_over:
-            arcade.draw_text("GAME OVER", SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2,
-                           arcade.color.RED, 50, font_name="Arial", bold=True)
-
-        # Если комната очищена, показываем сообщение
-        if self.room_cleared and len(self.door_list) > 0 and self.door_list[0].visible:
-            arcade.draw_text("Дверь открыта! Идите в центр комнаты",
-                           SCREEN_WIDTH // 2 - 200, SCREEN_HEIGHT // 2 + 100,
-                           arcade.color.GREEN, 30, font_name="Arial", bold=True)
+        # Убрали отрисовку "GAME OVER" здесь, так как теперь переключаемся на GameOverView
 
     def draw_ui(self):
         """Отрисовка интерфейса"""
@@ -274,9 +266,19 @@ class DungeonGame(arcade.View):
                 self.door_list[0].texture = arcade.make_soft_square_texture(60, arcade.color.GREEN)  # Зеленая дверь
             print("Комната очищена! Дверь открыта в центре комнаты.")
 
-        # Проверяем смерть игрока
+        # Проверяем смерть игрока - ПЕРЕНОСИМ В ОТДЕЛЬНЫЙ МЕТОД
         if self.player.health <= 0:
-            self.game_over = True
+            self.handle_game_over()
+
+    def handle_game_over(self):
+        """Обработка завершения игры"""
+        self.game_over = True
+        self.paused = True
+        
+        # Импортируем здесь, чтобы избежать циклического импорта
+        from menu import GameOverView
+        game_over_view = GameOverView(self.score, self.level, self.window)
+        self.window.show_view(game_over_view)
 
     def check_collisions(self):
         """Проверка всех столкновений"""
