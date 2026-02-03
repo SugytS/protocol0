@@ -4,7 +4,7 @@
 
 import arcade
 from config import *
-from game import DungeonGame  # Импортируем исправленный класс
+
 
 class MenuView(arcade.View):
     """Главное меню игры"""
@@ -85,7 +85,8 @@ class MenuView(arcade.View):
 
         if (SCREEN_WIDTH // 2 - button_width // 2 <= x <= SCREEN_WIDTH // 2 + button_width // 2 and
             start_y - button_height // 2 <= y <= start_y + button_height // 2):
-            # Создаем игру как View
+            # Импортируем внутри метода, чтобы избежать циклического импорта
+            from game import DungeonGame
             game_view = DungeonGame()
             self.window.show_view(game_view)
 
@@ -105,7 +106,6 @@ class UpgradeMenuView(arcade.View):
             {"name": "Увеличить урон на 20%", "type": "damage", "value": 1.2},
             {"name": "Увеличить здоровье на 25", "type": "health", "value": 25},
             {"name": "Увеличить скорость на 15%", "type": "speed", "value": 1.15},
-            # Убрали восстановление здоровья и патроны, так как они восстанавливаются автоматически
         ]
 
     def on_draw(self):
@@ -304,7 +304,6 @@ class GameOverView(arcade.View):
 
         if (left <= x <= right and bottom_menu <= y <= top_menu):
             # Возвращаемся в главное меню
-            from menu import MenuView
             menu_view = MenuView()
             self.window.show_view(menu_view)
 
