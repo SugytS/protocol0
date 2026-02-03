@@ -22,7 +22,7 @@ class Crate(arcade.Sprite):
                 TILE_SIZE, arcade.color.BROWN
             )
 
-        self.scale = 1.0
+        self.scale = 0.5
         self.health = 50
 
     def take_damage(self, damage):
