@@ -211,6 +211,10 @@ class DungeonGame(arcade.View):
         # Уровень
         arcade.draw_text(f"Level: {self.level}",
                          SCREEN_WIDTH - 150, SCREEN_HEIGHT - 60, UI_COLOR, 20)
+        
+        # Монеты (НОВОЕ)
+        arcade.draw_text(f"Coins: {self.player.coins}",
+                         SCREEN_WIDTH - 150, SCREEN_HEIGHT - 90, arcade.color.GOLD, 20)
 
         # Множитель урона
         arcade.draw_text(f"Damage: {self.player.damage_multiplier:.1f}x",
@@ -287,9 +291,14 @@ class DungeonGame(arcade.View):
         self.game_over = True
         self.paused = True
 
+        # Штраф за смерть - теряем часть монет
+        coins_lost = int(self.player.coins * DEATH_COIN_PENALTY)
+        self.player.coins -= coins_lost
+        print(f"Игрок умер! Потеряно {coins_lost} монет (штраф {DEATH_COIN_PENALTY*100}%)")
+
         # Импортируем здесь, чтобы избежать циклического импорта
         from menu import GameOverView
-        game_over_view = GameOverView(self.score, self.level, self.window)
+        game_over_view = GameOverView(self.score, self.level, self.player.coins, self.window)
         self.window.show_view(game_over_view)
 
     def check_collisions(self):
@@ -304,6 +313,15 @@ class DungeonGame(arcade.View):
                 if enemy.health <= 0:
                     enemy.remove_from_sprite_lists()
                     self.score += 10
+                    # Даем монеты за убийство врага
+                    enemy_type_bonus = {
+                        "melee": 5,
+                        "ranged": 8,
+                        "tank": 15,
+                        "boss": 50
+                    }
+                    coins_gained = enemy_type_bonus.get(enemy.type, 5) * self.level
+                    self.player.add_coins(coins_gained)
 
         # Пули игрока с ящиками
         for bullet in self.bullet_list:
@@ -312,6 +330,8 @@ class DungeonGame(arcade.View):
                 if crate.take_damage(bullet.damage):
                     crate.remove_from_sprite_lists()
                     self.score += 5
+                    # Даем монеты за разрушение ящика
+                    self.player.add_coins(3)
                 bullet.remove_from_sprite_lists()
 
         # Пули врагов с игроком
@@ -341,7 +361,17 @@ class DungeonGame(arcade.View):
         # Игрок с предметами
         hit_list = arcade.check_for_collision_with_list(self.player, self.item_list)
         for item in hit_list:
-            item.collect(self.player)
+            if item.type == "coin":
+                # Даем монеты за сбор монетки
+                self.player.add_coins(item.value)
+                print(f"Собрана монета! +{item.value} монет")
+            elif item.type == "health":
+                self.player.heal(item.value)
+                print(f"Собрано здоровье! +{item.value} HP")
+            elif item.type == "ammo":
+                self.player.add_ammo(item.value)
+                print(f"Собраны патроны! +{item.value} патронов")
+                
             item.remove_from_sprite_lists()
             self.score += ITEM_SCORES.get(item.type, 0)
 
@@ -387,24 +417,32 @@ class DungeonGame(arcade.View):
         upgrade_menu = UpgradeMenuView(self, self.apply_upgrade_and_continue)
         self.window.show_view(upgrade_menu)
 
-    def apply_upgrade_and_continue(self, upgrade_type, value):
+    def apply_upgrade_and_continue(self, upgrade_type, value, success, message):
         """Применить улучшение и перейти на следующий уровень"""
-        result = self.player.apply_upgrade(upgrade_type, value)
-        print(f"Применено улучшение: {result}")
-
-        # Возвращаемся в игру и переходим на следующий уровень
-        self.showing_upgrade_menu = False
-        self.paused = False
-        self.next_level()
+        if success:
+            print(f"Применено улучшение: {message}")
+            
+            # Возвращаемся в игру и переходим на следующий уровень
+            self.showing_upgrade_menu = False
+            self.paused = False
+            self.next_level()
+        else:
+            print(f"Ошибка покупки: {message}")
+            # Если не удалось купить, остаемся в меню улучшений
 
     def next_level(self):
         """Переход на следующий уровень"""
+        # Даем бонусные монеты за прохождение уровня
+        coins_bonus = LEVEL_COIN_BONUS * self.level
+        self.player.add_coins(coins_bonus)
+        print(f"Бонус за уровень {self.level}: +{coins_bonus} монет")
+        
         self.level += 1
         print(f"Переход на уровень {self.level}")
 
-        # Даем бонус за прохождение уровня
+        # Восстанавливаем здоровье и патроны (но не как улучшение, а как бонус)
         self.player.heal(self.player.max_health * 0.5)  # Восстанавливаем 50% здоровья
-        self.player.add_ammo(50)
+        self.player.add_ammo(50)  # Добавляем 50 патронов
         self.score += 500 * (self.level - 1)  # Бонусные очки
 
         # Генерируем новый уровень
