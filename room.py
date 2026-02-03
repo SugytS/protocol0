@@ -47,16 +47,30 @@ class RoomGenerator:
         # Добавляем ящики (препятствия) - но не в центре комнаты
         crate_count = random.randint(3, 8)
         for _ in range(crate_count):
-            # Ставим ящик так, чтобы не блокировать центр комнаты
-            x = random.randint(2, ROOM_WIDTH - 3)
-            y = random.randint(2, ROOM_HEIGHT - 3)
+            attempts = 0
+            placed = False
+            
+            while not placed and attempts < 20:  # Ограничим попытки, чтобы избежать бесконечного цикла
+                # Ставим ящик так, чтобы не блокировать центр комнаты
+                x = random.randint(2, ROOM_WIDTH - 3)
+                y = random.randint(2, ROOM_HEIGHT - 3)
 
-            # Не ставим ящики в центре комнаты (место для двери)
-            center_x = ROOM_WIDTH // 2
-            center_y = ROOM_HEIGHT // 2
-            if abs(x - center_x) > 1 or abs(y - center_y) > 1:
-                if (x, y) not in room["walls"]:
+                # Не ставим ящики в центре комнаты (место для двери)
+                center_x = ROOM_WIDTH // 2
+                center_y = ROOM_HEIGHT // 2
+                
+                # Проверяем все условия:
+                # 1. Не в центре комнаты (где дверь)
+                # 2. Не на стене
+                # 3. Не на уже существующем ящике
+                if (abs(x - center_x) > 1 or abs(y - center_y) > 1) and \
+                   (x, y) not in room["walls"] and \
+                   (x, y) not in room["crates"]:
+                    
                     room["crates"].append((x, y))
+                    placed = True
+                
+                attempts += 1
 
         # Добавляем врагов
         enemy_count = random.randint(3, 8)
@@ -69,7 +83,7 @@ class RoomGenerator:
             else:
                 enemy_type = "melee"
 
-            # Генерируем позицию, избегая стен и ящиков
+            # Генерируем позицию, избегая стен, ящиков и центра
             attempts = 0
             while attempts < 20:
                 x = random.randint(2, ROOM_WIDTH - 3) * TILE_SIZE + TILE_SIZE // 2
